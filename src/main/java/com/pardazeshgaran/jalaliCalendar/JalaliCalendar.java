@@ -190,7 +190,6 @@ public class JalaliCalendar extends Calendar {
         time = cal.getTimeInMillis();
 
         isTimeSeted = true;
-        isTimeSet = true;
     }
 
 
@@ -408,13 +407,12 @@ public class JalaliCalendar extends Calendar {
             time = cal.getTimeInMillis();
 
         }
-
     }
 
     @Override
     protected void computeFields() {
+        boolean temp=isTimeSet;
         if (!areFieldsSet) {
-
             setMinimalDaysInFirstWeek(1);
             setFirstDayOfWeek(7);
 
@@ -426,46 +424,45 @@ public class JalaliCalendar extends Calendar {
                 dayOfYear += jalaliDaysInMonth[index++];
             }
             dayOfYear += fields[5];
-            fields[DAY_OF_YEAR] = dayOfYear;
+            set(DAY_OF_YEAR, dayOfYear);
             //***
 
             //Day_of_Week
-            fields[DAY_OF_WEEK] = dayOfWeek(jalaliToGregorian(new YearMonthDate(fields[1], fields[2], fields[5])));
+            set(DAY_OF_WEEK, dayOfWeek(jalaliToGregorian(new YearMonthDate(fields[1], fields[2], fields[5]))));
             //***
 
             //Day_Of_Week_In_Month
             if (0 < fields[5] && fields[5] < 8) {
-                fields[DAY_OF_WEEK_IN_MONTH] = 1;
+                set(DAY_OF_WEEK_IN_MONTH, 1);
             }
 
             if (7 < fields[5] && fields[5] < 15) {
-                fields[DAY_OF_WEEK_IN_MONTH] = 2;
+                set(DAY_OF_WEEK_IN_MONTH, 2);
             }
 
             if (14 < fields[5] && fields[5] < 22) {
-                fields[DAY_OF_WEEK_IN_MONTH] = 3;
+                set(DAY_OF_WEEK_IN_MONTH, 3);
             }
 
             if (21 < fields[5] && fields[5] < 29) {
-                fields[DAY_OF_WEEK_IN_MONTH] = 4;
+                set(DAY_OF_WEEK_IN_MONTH, 4);
             }
 
             if (28 < fields[5] && fields[5] < 32) {
-                fields[DAY_OF_WEEK_IN_MONTH] = 5;
+                set(DAY_OF_WEEK_IN_MONTH, 5);
             }
             //***
 
 
             //Week_Of_Year
-            fields[WEEK_OF_YEAR] = weekOfYear(fields[6], fields[1]);
+            set(WEEK_OF_YEAR, weekOfYear(fields[6], fields[1]));
             //***
 
             //Week_Of_Month
-            fields[WEEK_OF_MONTH] = weekOfYear(fields[6], fields[1]) - weekOfYear(fields[6] - fields[5], fields[1]) + 1;
-            //***
-
-            areFieldsSet = true;
-        }
+            set(WEEK_OF_MONTH, weekOfYear(fields[6], fields[1]) - weekOfYear(fields[6] - fields[5], fields[1]) + 1);
+            //
+            isTimeSet=temp;
+    }
     }
 
     @Override

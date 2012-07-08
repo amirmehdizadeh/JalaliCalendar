@@ -158,6 +158,20 @@ public class JalaliCalendarTest {
         Assert.assertEquals(new JalaliCalendar().getMaximum(Calendar.MONTH), 11);
 
     }
+
+    @Test
+    public void rollTest(){
+
+        JalaliCalendar jalaliCalendar=new JalaliCalendar(1391,4,3,17,5,45);
+        jalaliCalendar.roll(Calendar.YEAR,10);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.YEAR),1401);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.MONTH),4);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.DAY_OF_MONTH),3);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.HOUR_OF_DAY),17);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.WEEK_OF_YEAR),19);
+
+
+    }
     
     @Test
     public void after_beforeTest(){
