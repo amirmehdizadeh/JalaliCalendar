@@ -649,16 +649,33 @@ public class JalaliCalendar extends Calendar {
 
                 break;
             }
-            case DAY_OF_YEAR:{
-                int unit=(isLeepYear(internalGet(YEAR))?366:365);
-                int dayOfYear=(internalGet(DAY_OF_YEAR)+amount)%unit;
-                dayOfYear=(dayOfYear>0)?dayOfYear:dayOfYear+unit;
-                int month=0,temp=0;
-                while (dayOfYear>temp){
-                    temp+=jalaliDaysInMonth[month++];
+            case DAY_OF_YEAR: {
+                int unit = (isLeepYear(internalGet(YEAR)) ? 366 : 365);
+                int dayOfYear = (internalGet(DAY_OF_YEAR) + amount) % unit;
+                dayOfYear = (dayOfYear > 0) ? dayOfYear : dayOfYear + unit;
+                int month = 0, temp = 0;
+                while (dayOfYear > temp) {
+                    temp += jalaliDaysInMonth[month++];
                 }
-                set(MONTH,--month);
-                set(DAY_OF_MONTH,jalaliDaysInMonth[internalGet(MONTH)]-(temp-dayOfYear));
+                set(MONTH, --month);
+                set(DAY_OF_MONTH, jalaliDaysInMonth[internalGet(MONTH)] - (temp - dayOfYear));
+                break;
+            }
+            case DAY_OF_WEEK: {
+                int index = amount % 7;
+                if (index < 0) {
+                    index += 7;
+                }
+                int i = 0;
+                while (i != index) {
+                    if (internalGet(DAY_OF_WEEK) == FRIDAY) {
+                        add(DAY_OF_MONTH, -6);
+                    } else {
+                        add(DAY_OF_MONTH, +1);
+                    }
+                    i++;
+                }
+
                 break;
             }
             default:
@@ -696,7 +713,7 @@ public class JalaliCalendar extends Calendar {
         return LEAST_MAX_VALUES[field];
     }
 
-    public  static class YearMonthDate {
+    public static class YearMonthDate {
 
         public YearMonthDate(int year, int month, int date) {
             this.year = year;
@@ -732,8 +749,8 @@ public class JalaliCalendar extends Calendar {
             this.date = date;
         }
 
-        public String toString(){
-            return getYear()+"/"+getMonth()+"/"+getDate();
+        public String toString() {
+            return getYear() + "/" + getMonth() + "/" + getDate();
         }
     }
 
