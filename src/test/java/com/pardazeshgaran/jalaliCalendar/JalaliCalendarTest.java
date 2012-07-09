@@ -164,11 +164,22 @@ public class JalaliCalendarTest {
 
         JalaliCalendar jalaliCalendar=new JalaliCalendar(1391,4,3,17,5,45);
         jalaliCalendar.roll(Calendar.YEAR,10);
-        Assert.assertEquals(jalaliCalendar.get(Calendar.YEAR),1401);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.YEAR), 1401);
         Assert.assertEquals(jalaliCalendar.get(Calendar.MONTH),4);
         Assert.assertEquals(jalaliCalendar.get(Calendar.DAY_OF_MONTH),3);
         Assert.assertEquals(jalaliCalendar.get(Calendar.HOUR_OF_DAY),17);
         Assert.assertEquals(jalaliCalendar.get(Calendar.WEEK_OF_YEAR),19);
+        jalaliCalendar=new JalaliCalendar(1391,11,30);
+        jalaliCalendar.roll(Calendar.YEAR,1);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.YEAR), 1392);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.MONTH),11);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.DAY_OF_MONTH),29);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.WEEK_OF_YEAR),53);
+        jalaliCalendar=new JalaliCalendar(1391,11,30);
+        jalaliCalendar.roll(Calendar.YEAR,4);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.YEAR), 1395);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.MONTH),11);
+        Assert.assertEquals(jalaliCalendar.get(Calendar.DAY_OF_MONTH),30);
 
 
     }

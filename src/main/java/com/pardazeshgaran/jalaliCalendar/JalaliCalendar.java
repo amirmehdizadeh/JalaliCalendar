@@ -364,7 +364,13 @@ public class JalaliCalendar extends Calendar {
 
     }
 
-
+    public static boolean isLeepYear(int year){
+        if((year % 33 == 1 || year % 33 == 5 || year % 33 == 9 || year % 33 == 13 ||
+                year % 33 == 17 || year % 33 == 22 || year % 33 == 26 || year % 33 == 30)){
+            return true;
+        }
+        else return false;
+    }
     @Override
     protected void computeTime() {
 
@@ -474,8 +480,7 @@ public class JalaliCalendar extends Calendar {
             set(MONTH, amount % 12);
             if (get(DAY_OF_MONTH) > jalaliDaysInMonth[amount % 12]) {
                 set(DAY_OF_MONTH, jalaliDaysInMonth[amount % 12]);
-                if (get(MONTH) == 11 && (get(YEAR) % 33 == 1 || get(YEAR) % 33 == 5 || get(YEAR) % 33 == 9 || get(YEAR) % 33 == 13 ||
-                        get(YEAR) % 33 == 17 || get(YEAR) % 33 == 22 || get(YEAR) % 33 == 26 || get(YEAR) % 33 == 30)) {
+                if (get(MONTH) == 11 && isLeepYear(get(YEAR))) {
                     set(DAY_OF_MONTH, 30);
                 }
             }
@@ -484,8 +489,7 @@ public class JalaliCalendar extends Calendar {
         } else if (field == YEAR) {
 
             set(YEAR, get(YEAR) + amount);
-            if (get(DAY_OF_MONTH) == 30 && get(MONTH) == 11 && !((get(YEAR) % 33 == 1 || get(YEAR) % 33 == 5 || get(YEAR) % 33 == 9 || get(YEAR) % 33 == 13 ||
-                    get(YEAR) % 33 == 17 || get(YEAR) % 33 == 22 || get(YEAR) % 33 == 26 || get(YEAR) % 33 == 30))) {
+            if (get(DAY_OF_MONTH) == 30 && get(MONTH) == 11 && !isLeepYear(get(YEAR))) {
                 set(DAY_OF_MONTH, 29);
             }
 
@@ -535,7 +539,10 @@ public class JalaliCalendar extends Calendar {
                 }
             }
             case YEAR: {
-                set(YEAR, get(YEAR) + amount);
+                set(YEAR, internalGet(YEAR) + amount);
+                if(internalGet(MONTH)==11 && internalGet(DAY_OF_MONTH)==30 && !isLeepYear(internalGet(YEAR))){
+                    set(DAY_OF_MONTH,29);
+                }
             }
             case MINUTE: {
                 int unit = 60;
