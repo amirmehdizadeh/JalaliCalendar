@@ -530,19 +530,26 @@ public class JalaliCalendar extends Calendar {
 
         switch (field) {
             case AM_PM: {
-                if (amount % 2 != 0) {
-                    if (internalGet(AM_PM) == 1) {
-                        set(AM_PM, 0);
+                if (amount % 2 == 1) {
+                    if (internalGet(AM_PM) == AM) {
+                        fields[AM_PM]=PM;
                     } else {
-                        set(AM_PM, 1);
+                        fields[AM_PM]=AM;
+                    }
+                    if (get(AM_PM) == AM) {
+                        set(HOUR_OF_DAY, get(HOUR));
+                    } else {
+                        set(HOUR_OF_DAY, get(HOUR) + 12);
                     }
                 }
+                break;
             }
             case YEAR: {
                 set(YEAR, internalGet(YEAR) + amount);
                 if (internalGet(MONTH) == 11 && internalGet(DAY_OF_MONTH) == 30 && !isLeepYear(internalGet(YEAR))) {
                     set(DAY_OF_MONTH, 29);
                 }
+                break;
             }
             case MINUTE: {
                 int unit = 60;
@@ -551,6 +558,7 @@ public class JalaliCalendar extends Calendar {
                     m += unit;
                 }
                 set(MINUTE, m);
+                break;
             }
             case SECOND: {
                 int unit = 60;
@@ -559,6 +567,7 @@ public class JalaliCalendar extends Calendar {
                     s += unit;
                 }
                 set(SECOND, s);
+                break;
             }
             case MILLISECOND: {
                 int unit = 1000;
@@ -567,8 +576,8 @@ public class JalaliCalendar extends Calendar {
                     ms += unit;
                 }
                 set(MILLISECOND, ms);
+                break;
             }
-            break;
 
             case HOUR:
             case HOUR_OF_DAY: {
@@ -620,8 +629,7 @@ public class JalaliCalendar extends Calendar {
                     unit = 30;
                 }
                 if (get(MONTH) == 11) {
-                    if (get(YEAR) % 33 == 1 || get(YEAR) % 33 == 5 || get(YEAR) % 33 == 9 || get(YEAR) % 33 == 13 ||
-                            get(YEAR) % 33 == 17 || get(YEAR) % 33 == 22 || get(YEAR) % 33 == 26 || get(YEAR) % 33 == 30) {
+                    if (isLeepYear(get(YEAR))) {
                         unit = 30;
                     } else {
                         unit = 29;
@@ -631,6 +639,10 @@ public class JalaliCalendar extends Calendar {
                 set(DAY_OF_MONTH, d);
                 break;
 
+            }
+            case WEEK_OF_YEAR: {
+
+                break;
             }
             default:
                 throw new IllegalArgumentException();
