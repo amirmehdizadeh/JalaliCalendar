@@ -532,9 +532,9 @@ public class JalaliCalendar extends Calendar {
             case AM_PM: {
                 if (amount % 2 == 1) {
                     if (internalGet(AM_PM) == AM) {
-                        fields[AM_PM]=PM;
+                        fields[AM_PM] = PM;
                     } else {
-                        fields[AM_PM]=AM;
+                        fields[AM_PM] = AM;
                     }
                     if (get(AM_PM) == AM) {
                         set(HOUR_OF_DAY, get(HOUR));
@@ -579,28 +579,28 @@ public class JalaliCalendar extends Calendar {
                 break;
             }
 
-            case HOUR:
-            case HOUR_OF_DAY: {
-                int unit = 12; // 12 or 24 hours
-                int h = fields[11];
-                int nh = (h + amount) % unit;
-                if (nh < 0) {
-                    nh += unit;
+            case HOUR: {
+                set(HOUR, (internalGet(HOUR) + amount) % 12);
+                if (internalGet(AM_PM) == AM) {
+                    set(HOUR_OF_DAY, internalGet(HOUR));
+                } else {
+                    set(HOUR_OF_DAY, internalGet(HOUR) + 12);
                 }
-                set(HOUR_OF_DAY, nh);
-                unit = 24;
-                h = fields[10];
-                nh = (h + amount) % unit;
-                if (nh < 0) {
-                    nh += unit;
-                }
-                set(HOUR, nh);
+
                 break;
             }
-            case MONTH:    // Rolling the month involves both pinning the final value to [0, 11]
-                // and adjusting the DAY_OF_MONTH if necessary.  We only adjust the
-                // DAY_OF_MONTH if, after updating the MONTH field, it is illegal.
-                // E.g., <jan31>.roll(MONTH, 1) -> <feb28> or <feb29>.
+            case HOUR_OF_DAY: {
+                fields[HOUR_OF_DAY] = (internalGet(HOUR_OF_DAY) + amount) % 24;
+                if (internalGet(HOUR_OF_DAY) < 12) {
+                    fields[AM_PM] = AM;
+                    fields[HOUR] = internalGet(HOUR_OF_DAY);
+                } else {
+                    fields[AM_PM] = PM;
+                    fields[HOUR] = internalGet(HOUR_OF_DAY) - 12;
+                }
+
+            }
+            case MONTH:
             {
                 int mon = (internalGet(MONTH) + amount) % 12;
                 if (mon < 0) {
@@ -608,9 +608,6 @@ public class JalaliCalendar extends Calendar {
                 }
                 set(MONTH, mon);
 
-                // Keep the day of month in the range.  We don't want to spill over
-                // into the next month; e.g., we don't want jan31 + 1 mo -> feb31 ->
-                // mar3.
                 int monthLen = jalaliDaysInMonth[mon];
                 if (internalGet(MONTH) == 11 && isLeepYear(internalGet(YEAR))) {
                     monthLen = 30;
