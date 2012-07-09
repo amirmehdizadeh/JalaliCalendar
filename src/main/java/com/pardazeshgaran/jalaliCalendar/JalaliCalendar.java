@@ -185,7 +185,7 @@ public class JalaliCalendar extends Calendar {
         this.set(MILLISECOND, millis);
 
         YearMonthDate yearMonthDate = jalaliToGregorian(new YearMonthDate(year, month, dayOfMonth));
-        Calendar cal=new GregorianCalendar(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(),hourOfDay,
+        Calendar cal = new GregorianCalendar(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(), hourOfDay,
                 minute, second);
         time = cal.getTimeInMillis();
 
@@ -364,13 +364,13 @@ public class JalaliCalendar extends Calendar {
 
     }
 
-    public static boolean isLeepYear(int year){
-        if((year % 33 == 1 || year % 33 == 5 || year % 33 == 9 || year % 33 == 13 ||
-                year % 33 == 17 || year % 33 == 22 || year % 33 == 26 || year % 33 == 30)){
+    public static boolean isLeepYear(int year) {
+        if ((year % 33 == 1 || year % 33 == 5 || year % 33 == 9 || year % 33 == 13 ||
+                year % 33 == 17 || year % 33 == 22 || year % 33 == 26 || year % 33 == 30)) {
             return true;
-        }
-        else return false;
+        } else return false;
     }
+
     @Override
     protected void computeTime() {
 
@@ -417,7 +417,7 @@ public class JalaliCalendar extends Calendar {
 
     @Override
     protected void computeFields() {
-        boolean temp=isTimeSet;
+        boolean temp = isTimeSet;
         if (!areFieldsSet) {
             setMinimalDaysInFirstWeek(1);
             setFirstDayOfWeek(7);
@@ -467,8 +467,8 @@ public class JalaliCalendar extends Calendar {
             //Week_Of_Month
             set(WEEK_OF_MONTH, weekOfYear(fields[6], fields[1]) - weekOfYear(fields[6] - fields[5], fields[1]) + 1);
             //
-            isTimeSet=temp;
-    }
+            isTimeSet = temp;
+        }
     }
 
     @Override
@@ -540,8 +540,8 @@ public class JalaliCalendar extends Calendar {
             }
             case YEAR: {
                 set(YEAR, internalGet(YEAR) + amount);
-                if(internalGet(MONTH)==11 && internalGet(DAY_OF_MONTH)==30 && !isLeepYear(internalGet(YEAR))){
-                    set(DAY_OF_MONTH,29);
+                if (internalGet(MONTH) == 11 && internalGet(DAY_OF_MONTH) == 30 && !isLeepYear(internalGet(YEAR))) {
+                    set(DAY_OF_MONTH, 29);
                 }
             }
             case MINUTE: {
@@ -603,6 +603,9 @@ public class JalaliCalendar extends Calendar {
                 // into the next month; e.g., we don't want jan31 + 1 mo -> feb31 ->
                 // mar3.
                 int monthLen = jalaliDaysInMonth[mon];
+                if (internalGet(MONTH) == 11 && isLeepYear(internalGet(YEAR))) {
+                    monthLen = 30;
+                }
                 if (internalGet(DAY_OF_MONTH) > monthLen) {
                     set(DAY_OF_MONTH, monthLen);
                 }
