@@ -530,7 +530,7 @@ public class JalaliCalendar extends Calendar {
 
         switch (field) {
             case AM_PM: {
-                if (amount % 2 == 1) {
+                if (amount % 2 != 0) {
                     if (internalGet(AM_PM) == AM) {
                         fields[AM_PM] = PM;
                     } else {
@@ -581,6 +581,9 @@ public class JalaliCalendar extends Calendar {
 
             case HOUR: {
                 set(HOUR, (internalGet(HOUR) + amount) % 12);
+                if (internalGet(HOUR) < 0) {
+                    fields[HOUR] += 12;
+                }
                 if (internalGet(AM_PM) == AM) {
                     set(HOUR_OF_DAY, internalGet(HOUR));
                 } else {
@@ -591,6 +594,9 @@ public class JalaliCalendar extends Calendar {
             }
             case HOUR_OF_DAY: {
                 fields[HOUR_OF_DAY] = (internalGet(HOUR_OF_DAY) + amount) % 24;
+                if (internalGet(HOUR_OF_DAY) < 0) {
+                    fields[HOUR_OF_DAY] += 24;
+                }
                 if (internalGet(HOUR_OF_DAY) < 12) {
                     fields[AM_PM] = AM;
                     fields[HOUR] = internalGet(HOUR_OF_DAY);
@@ -600,8 +606,7 @@ public class JalaliCalendar extends Calendar {
                 }
 
             }
-            case MONTH:
-            {
+            case MONTH: {
                 int mon = (internalGet(MONTH) + amount) % 12;
                 if (mon < 0) {
                     mon += 12;
@@ -633,6 +638,9 @@ public class JalaliCalendar extends Calendar {
                     }
                 }
                 int d = (get(DAY_OF_MONTH) + amount) % unit;
+                if (d < 0) {
+                    d += unit;
+                }
                 set(DAY_OF_MONTH, d);
                 break;
 
