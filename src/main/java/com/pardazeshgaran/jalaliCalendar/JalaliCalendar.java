@@ -649,6 +649,18 @@ public class JalaliCalendar extends Calendar {
 
                 break;
             }
+            case DAY_OF_YEAR:{
+                int unit=(isLeepYear(internalGet(YEAR))?366:365);
+                int dayOfYear=(internalGet(DAY_OF_YEAR)+amount)%unit;
+                dayOfYear=(dayOfYear>0)?dayOfYear:dayOfYear+unit;
+                int month=0,temp=0;
+                while (dayOfYear>temp){
+                    temp+=jalaliDaysInMonth[month++];
+                }
+                set(MONTH,--month);
+                set(DAY_OF_MONTH,jalaliDaysInMonth[internalGet(MONTH)]-(temp-dayOfYear));
+                break;
+            }
             default:
                 throw new IllegalArgumentException();
         }
@@ -683,4 +695,47 @@ public class JalaliCalendar extends Calendar {
     public int getLeastMaximum(int field) {
         return LEAST_MAX_VALUES[field];
     }
+
+    public  static class YearMonthDate {
+
+        public YearMonthDate(int year, int month, int date) {
+            this.year = year;
+            this.month = month;
+            this.date = date;
+        }
+
+        private int year;
+        private int month;
+        private int date;
+
+        public int getYear() {
+            return year;
+        }
+
+        public void setYear(int year) {
+            this.year = year;
+        }
+
+        public int getMonth() {
+            return month;
+        }
+
+        public void setMonth(int month) {
+            this.month = month;
+        }
+
+        public int getDate() {
+            return date;
+        }
+
+        public void setDate(int date) {
+            this.date = date;
+        }
+
+        public String toString(){
+            return getYear()+"/"+getMonth()+"/"+getDate();
+        }
+    }
+
 }
+
