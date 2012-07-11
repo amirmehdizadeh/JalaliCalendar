@@ -1,9 +1,6 @@
-JalaliCalendar
-====
-* * *
+h1. JalaliCalendar
 
-###About###
--------
+h2. About
 
 p.  JalaliCalendar is a concrete subclass of Calendar and provides the standard calendar system used by Persians. For more information about Persian calendar (also calls jalali or shamsi) visit <http://en.wikipedia.org/wiki/Iranian_calendars>.  This class implements all methods of gregorianCalendar class in java.
 
