@@ -1,4 +1,4 @@
-package com.pardazeshgaran.jalaliCalendar;
+package com.pardazeshgaran.jalalicalendar;
 
 import sun.util.calendar.BaseCalendar;
 import sun.util.calendar.CalendarSystem;
@@ -351,16 +351,8 @@ public class JalaliCalendar extends Calendar {
 
     public static int dayOfWeek(YearMonthDate yearMonthDate) {
 
-        int y = yearMonthDate.getYear();
-        int m = yearMonthDate.getMonth();
-        m++;
-        int d = yearMonthDate.getDate();
-        int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
-        if (m < 3) {
-            y -= m;
-        }
-        int result = (y + y / 4 - y / 100 + y / 400 + t[m - 1] + d) % 7;
-        return result + 1;
+        Calendar cal=new GregorianCalendar(yearMonthDate.getYear(),yearMonthDate.getMonth(),yearMonthDate.getDate());
+        return cal.get(DAY_OF_WEEK);
 
     }
 
@@ -467,6 +459,7 @@ public class JalaliCalendar extends Calendar {
             //Week_Of_Month
             set(WEEK_OF_MONTH, weekOfYear(fields[6], fields[1]) - weekOfYear(fields[6] - fields[5], fields[1]) + 1);
             //
+
             isTimeSet = temp;
         }
     }
@@ -646,7 +639,6 @@ public class JalaliCalendar extends Calendar {
 
             }
             case WEEK_OF_YEAR: {
-
                 break;
             }
             case DAY_OF_YEAR: {
@@ -675,9 +667,14 @@ public class JalaliCalendar extends Calendar {
                     }
                     i++;
                 }
-
                 break;
             }
+
+            case WEEK_OF_MONTH:{
+                int dayOfMonth=internalGet(DAY_OF_MONTH);
+
+            }
+           
             default:
                 throw new IllegalArgumentException();
         }
