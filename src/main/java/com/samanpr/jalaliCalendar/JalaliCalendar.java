@@ -1,4 +1,4 @@
-package com.pardazeshgaran.jalaliCalendar;
+package com.samanpr.jalaliCalendar;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
