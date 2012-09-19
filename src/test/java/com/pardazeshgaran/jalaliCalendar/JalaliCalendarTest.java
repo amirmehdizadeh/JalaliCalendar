@@ -1,4 +1,4 @@
-package com.pardazeshgaran.jalalicalendar;
+package com.pardazeshgaran.jalaliCalendar;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

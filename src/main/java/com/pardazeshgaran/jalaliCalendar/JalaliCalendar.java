@@ -1,18 +1,9 @@
-package com.pardazeshgaran.jalalicalendar;
+package com.pardazeshgaran.jalaliCalendar;
 
-import sun.util.calendar.BaseCalendar;
-import sun.util.calendar.CalendarSystem;
-import sun.util.calendar.Gregorian;
-
-import java.util.*;
-
-/**
- * Created by IntelliJ IDEA.
- * User: Amir
- * Date: 6/25/12
- * Time: 10:33 AM
- * To change this template use File | Settings | File Templates.
- */
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class JalaliCalendar extends Calendar {
     public static int gregorianDaysInMonth[] = {31, 28, 31, 30, 31,
@@ -32,22 +23,18 @@ public class JalaliCalendar extends Calendar {
     public final static int DEY = 9;
     public final static int BAHMAN = 10;
     public final static int ESFAND = 11;
-    private transient BaseCalendar.Date gdate;
-    private static final Gregorian gcal =
-            CalendarSystem.getGregorianCalendar();
+
     private static TimeZone timeZone = TimeZone.getDefault();
     private static boolean isTimeSeted = false;
-    private transient BaseCalendar baseCalendar;
 
     private static final int ONE_SECOND = 1000;
     private static final int ONE_MINUTE = 60 * ONE_SECOND;
     private static final int ONE_HOUR = 60 * ONE_MINUTE;
     private static final long ONE_DAY = 24 * ONE_HOUR;
-    private static final long ONE_WEEK = 7 * ONE_DAY;
     static final int BCE = 0;
     static final int CE = 1;
     public static final int AD = 1;
-    GregorianCalendar cal;
+    private GregorianCalendar cal;
 
     static final int MIN_VALUES[] = {
             BCE,        // ERA
@@ -109,10 +96,8 @@ public class JalaliCalendar extends Calendar {
             2 * ONE_HOUR    // DST_OFFSET (double summer time)
     };
 
-
     public JalaliCalendar() {
         this(TimeZone.getDefault(), Locale.getDefault());
-        //setZoneShared(true);
     }
 
     public JalaliCalendar(TimeZone zone) {
@@ -121,7 +106,6 @@ public class JalaliCalendar extends Calendar {
 
     public JalaliCalendar(Locale aLocale) {
         this(TimeZone.getDefault(), aLocale);
-        //setZoneShared(true);
     }
 
     public JalaliCalendar(TimeZone zone, Locale aLocale) {
@@ -132,7 +116,7 @@ public class JalaliCalendar extends Calendar {
 
         YearMonthDate yearMonthDate = new YearMonthDate(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DATE));
         yearMonthDate = gregorianToJalali(yearMonthDate);
-        this.set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate());
+        super.set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate());
         complete();
 
     }
@@ -155,37 +139,27 @@ public class JalaliCalendar extends Calendar {
                    int hourOfDay, int minute, int second, int millis) {
         super();
 
-
         this.set(YEAR, year);
         this.set(MONTH, month);
         this.set(DAY_OF_MONTH, dayOfMonth);
 
-        // Set AM_PM and HOUR here to set their stamp values before
-        // setting HOUR_OF_DAY (6178071).
         if (hourOfDay >= 12 && hourOfDay <= 23) {
-            // If hourOfDay is a valid PM hour, set the correct PM values
-            // so that it won't throw an exception in case it's set to
-            // non-lenient later.
+
             this.set(AM_PM, PM);
             this.set(HOUR, hourOfDay - 12);
         } else {
-            // The default value for AM_PM is AM.
-            // We don't care any out of range value here for leniency.
             this.set(HOUR, hourOfDay);
             this.set(AM_PM, AM);
         }
-        // The stamp values of AM_PM and HOUR must be COMPUTED. (6440854)
-        //setFieldsComputed(HOUR_MASK|AM_PM_MASK);
 
         this.set(HOUR_OF_DAY, hourOfDay);
         this.set(MINUTE, minute);
         this.set(SECOND, second);
-        // should be changed to set() when this constructor is made
-        // public.
+
         this.set(MILLISECOND, millis);
 
         YearMonthDate yearMonthDate = jalaliToGregorian(new YearMonthDate(year, month, dayOfMonth));
-        Calendar cal = new GregorianCalendar(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(), hourOfDay,
+        cal = new GregorianCalendar(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(), hourOfDay,
                 minute, second);
         time = cal.getTimeInMillis();
 
@@ -204,7 +178,6 @@ public class JalaliCalendar extends Calendar {
         int i;
 
         gregorian.setYear(gregorian.getYear() - 1600);
-        //gregorian.setMonth(gregorian.getMonth() - 1);
         gregorian.setDate(gregorian.getDate() - 1);
 
         gregorianDayNo = 365 * gregorian.getYear() + (int) Math.floor((gregorian.getYear() + 3) / 4)
@@ -255,7 +228,6 @@ public class JalaliCalendar extends Calendar {
 
         int i;
         jalali.setYear(jalali.getYear() - 979);
-        //jalali.setMonth(jalali.getMonth() - 1);
         jalali.setDate(jalali.getDate() - 1);
 
         jalaliDayNo = 365 * jalali.getYear() + (int) (jalali.getYear() / 33) * 8
@@ -305,24 +277,6 @@ public class JalaliCalendar extends Calendar {
 
     }
 
-    /*   public static Calendar getInstance(){
-           return getInstance(TimeZone.getDefault(),Locale.getDefault());
-        }
-    
-        public static Calendar getInstance(TimeZone zone){
-            return getInstance(zone, Locale.getDefault());
-        }
-    
-        public static Calendar getInstance(Locale locale){
-            return getInstance(TimeZone.getDefault(),locale);
-        }
-    
-        public static Calendar getInstance(TimeZone zone,Locale locale){
-            timeZone=zone;
-            return new JalaliCalendar(zone,locale);
-        }
-    
-    */
     public static int weekOfYear(int dayOfYear, int year) {
         switch (dayOfWeek(JalaliCalendar.jalaliToGregorian(new YearMonthDate(year, 0, 1)))) {
             case 2:
@@ -351,12 +305,13 @@ public class JalaliCalendar extends Calendar {
 
     public static int dayOfWeek(YearMonthDate yearMonthDate) {
 
-        Calendar cal=new GregorianCalendar(yearMonthDate.getYear(),yearMonthDate.getMonth(),yearMonthDate.getDate());
+        Calendar cal = new GregorianCalendar(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate());
         return cal.get(DAY_OF_WEEK);
 
     }
 
     public static boolean isLeepYear(int year) {
+        //Algorithm from www.wikipedia.com
         if ((year % 33 == 1 || year % 33 == 5 || year % 33 == 9 || year % 33 == 13 ||
                 year % 33 == 17 || year % 33 == 22 || year % 33 == 26 || year % 33 == 30)) {
             return true;
@@ -368,14 +323,38 @@ public class JalaliCalendar extends Calendar {
 
         if (!isTimeSet && !isTimeSeted) {
             Calendar cal = GregorianCalendar.getInstance(timeZone);
-            set(HOUR_OF_DAY, cal.get(HOUR_OF_DAY));
-            set(HOUR, cal.get(HOUR));
-            set(MINUTE, cal.get(MINUTE));
-            set(SECOND, cal.get(SECOND));
-            set(MILLISECOND, cal.get(MILLISECOND));
-            set(ZONE_OFFSET, cal.get(ZONE_OFFSET));
-            set(DST_OFFSET, cal.get(DST_OFFSET));
-            set(AM_PM, cal.get(AM_PM));
+            if (!isSet(HOUR_OF_DAY)) {
+                super.set(HOUR_OF_DAY, cal.get(HOUR_OF_DAY));
+            }
+            if (!isSet(HOUR)) {
+                super.set(HOUR, cal.get(HOUR));
+            }
+            if (!isSet(MINUTE)) {
+                super.set(MINUTE, cal.get(MINUTE));
+            }
+            if (!isSet(SECOND)) {
+                super.set(SECOND, cal.get(SECOND));
+            }
+            if (!isSet(MILLISECOND)) {
+                super.set(MILLISECOND, cal.get(MILLISECOND));
+            }
+            if (!isSet(ZONE_OFFSET)) {
+                super.set(ZONE_OFFSET, cal.get(ZONE_OFFSET));
+            }
+            if (!isSet(DST_OFFSET)) {
+                super.set(DST_OFFSET, cal.get(DST_OFFSET));
+            }
+            if (!isSet(AM_PM)) {
+                super.set(AM_PM, cal.get(AM_PM));
+            }
+
+            if (internalGet(HOUR_OF_DAY) >= 12 && internalGet(HOUR_OF_DAY) <= 23) {
+                super.set(AM_PM, PM);
+                super.set(HOUR, internalGet(HOUR_OF_DAY) - 12);
+            } else {
+                super.set(HOUR, internalGet(HOUR_OF_DAY));
+                super.set(AM_PM, AM);
+            }
 
             YearMonthDate yearMonthDate = jalaliToGregorian(new YearMonthDate(internalGet(YEAR), internalGet(MONTH), internalGet(DAY_OF_MONTH)));
             cal.set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate()
@@ -383,27 +362,106 @@ public class JalaliCalendar extends Calendar {
             time = cal.getTimeInMillis();
 
         } else if (!isTimeSet && isTimeSeted) {
-
             if (internalGet(HOUR_OF_DAY) >= 12 && internalGet(HOUR_OF_DAY) <= 23) {
-                // If hourOfDay is a valid PM hour, set the correct PM values
-                // so that it won't throw an exception in case it's set to
-                // non-lenient later.
-                this.set(AM_PM, PM);
-                this.set(HOUR, internalGet(HOUR_OF_DAY) - 12);
+                super.set(AM_PM, PM);
+                super.set(HOUR, internalGet(HOUR_OF_DAY) - 12);
             } else {
-                // The default value for AM_PM is AM.
-                // We don't care any out of range value here for leniency.
-                this.set(HOUR, internalGet(HOUR_OF_DAY));
-                this.set(AM_PM, AM);
+                super.set(HOUR, internalGet(HOUR_OF_DAY));
+                super.set(AM_PM, AM);
             }
             cal = new GregorianCalendar();
-            this.set(ZONE_OFFSET, timeZone.getRawOffset());
-            this.set(DST_OFFSET, timeZone.getDSTSavings());
+            super.set(ZONE_OFFSET, timeZone.getRawOffset());
+            super.set(DST_OFFSET, timeZone.getDSTSavings());
             YearMonthDate yearMonthDate = jalaliToGregorian(new YearMonthDate(internalGet(YEAR), internalGet(MONTH), internalGet(DAY_OF_MONTH)));
             cal.set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(), internalGet(HOUR_OF_DAY),
                     internalGet(MINUTE), internalGet(SECOND));
             time = cal.getTimeInMillis();
+        }
+    }
 
+    public void set(int field, int value) {
+        switch (field) {
+            case DATE: {
+                super.set(field, 0);
+                add(field, value);
+                break;
+            }
+            case MONTH: {
+                super.set(field, value % 12);
+                if (value > 11) {
+                    add(field, value - 11);
+                } else if (value < -11) {
+                    add(field, value + 11);
+                }
+                break;
+            }
+            case DAY_OF_YEAR: {
+                if (isSet(YEAR) && isSet(MONTH) && isSet(DAY_OF_MONTH)) {
+                    super.set(YEAR, internalGet(YEAR));
+                    super.set(MONTH, 0);
+                    super.set(DATE, 0);
+                    add(field, value);
+                } else {
+                    super.set(field, value);
+                }
+                break;
+            }
+            case WEEK_OF_YEAR: {
+                if (isSet(YEAR) && isSet(MONTH) && isSet(DAY_OF_MONTH)) {
+                    add(field, value - get(WEEK_OF_YEAR));
+                } else {
+                    super.set(field, value);
+                }
+                break;
+            }
+            case WEEK_OF_MONTH: {
+                if (isSet(YEAR) && isSet(MONTH) && isSet(DAY_OF_MONTH)) {
+                    add(field, value - get(WEEK_OF_MONTH));
+                } else {
+                    super.set(field, value);
+                }
+                break;
+            }
+            case DAY_OF_WEEK: {
+                if (isSet(YEAR) && isSet(MONTH) && isSet(DAY_OF_MONTH)) {
+                    add(DAY_OF_WEEK, value % 7 - get(DAY_OF_WEEK));
+                } else {
+                    super.set(field, value);
+                }
+                break;
+            }
+            case HOUR_OF_DAY:
+            case HOUR:
+            case MINUTE:
+            case SECOND:
+            case MILLISECOND:
+            case ZONE_OFFSET:
+            case DST_OFFSET: {
+                if (isSet(YEAR) && isSet(MONTH) && isSet(DATE) && isSet(HOUR) && isSet(HOUR_OF_DAY) &&
+                        isSet(MINUTE) && isSet(SECOND) && isSet(MILLISECOND)) {
+                    cal = new GregorianCalendar();
+                    YearMonthDate yearMonthDate = jalaliToGregorian(new YearMonthDate(internalGet(YEAR), internalGet(MONTH), internalGet(DATE)));
+                    cal.set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(), internalGet(HOUR_OF_DAY), internalGet(MINUTE),
+                            internalGet(SECOND));
+                    cal.set(field, value);
+                    yearMonthDate = gregorianToJalali(new YearMonthDate(cal.get(YEAR), cal.get(MONTH), cal.get(DATE)));
+                    super.set(YEAR, yearMonthDate.getYear());
+                    super.set(MONTH, yearMonthDate.getMonth());
+                    super.set(DATE, yearMonthDate.getDate());
+                    super.set(HOUR_OF_DAY, cal.get(HOUR_OF_DAY));
+                    super.set(MINUTE, cal.get(MINUTE));
+                    super.set(SECOND, cal.get(SECOND));
+
+                } else {
+                    super.set(field, value);
+                }
+                break;
+            }
+
+
+            default: {
+                super.set(field, value);
+            }
         }
     }
 
@@ -422,42 +480,41 @@ public class JalaliCalendar extends Calendar {
                 dayOfYear += jalaliDaysInMonth[index++];
             }
             dayOfYear += fields[5];
-            set(DAY_OF_YEAR, dayOfYear);
+            super.set(DAY_OF_YEAR, dayOfYear);
             //***
 
             //Day_of_Week
-            set(DAY_OF_WEEK, dayOfWeek(jalaliToGregorian(new YearMonthDate(fields[1], fields[2], fields[5]))));
+            super.set(DAY_OF_WEEK, dayOfWeek(jalaliToGregorian(new YearMonthDate(fields[1], fields[2], fields[5]))));
             //***
 
             //Day_Of_Week_In_Month
             if (0 < fields[5] && fields[5] < 8) {
-                set(DAY_OF_WEEK_IN_MONTH, 1);
+                super.set(DAY_OF_WEEK_IN_MONTH, 1);
             }
 
             if (7 < fields[5] && fields[5] < 15) {
-                set(DAY_OF_WEEK_IN_MONTH, 2);
+                super.set(DAY_OF_WEEK_IN_MONTH, 2);
             }
 
             if (14 < fields[5] && fields[5] < 22) {
-                set(DAY_OF_WEEK_IN_MONTH, 3);
+                super.set(DAY_OF_WEEK_IN_MONTH, 3);
             }
 
             if (21 < fields[5] && fields[5] < 29) {
-                set(DAY_OF_WEEK_IN_MONTH, 4);
+                super.set(DAY_OF_WEEK_IN_MONTH, 4);
             }
 
             if (28 < fields[5] && fields[5] < 32) {
-                set(DAY_OF_WEEK_IN_MONTH, 5);
+                super.set(DAY_OF_WEEK_IN_MONTH, 5);
             }
             //***
 
-
             //Week_Of_Year
-            set(WEEK_OF_YEAR, weekOfYear(fields[6], fields[1]));
+            super.set(WEEK_OF_YEAR, weekOfYear(fields[6], fields[1]));
             //***
 
             //Week_Of_Month
-            set(WEEK_OF_MONTH, weekOfYear(fields[6], fields[1]) - weekOfYear(fields[6] - fields[5], fields[1]) + 1);
+            super.set(WEEK_OF_MONTH, weekOfYear(fields[6], fields[1]) - weekOfYear(fields[6] - fields[5], fields[1]) + 1);
             //
 
             isTimeSet = temp;
@@ -470,20 +527,20 @@ public class JalaliCalendar extends Calendar {
         if (field == MONTH) {
             amount += get(MONTH);
             add(YEAR, amount / 12);
-            set(MONTH, amount % 12);
+            super.set(MONTH, amount % 12);
             if (get(DAY_OF_MONTH) > jalaliDaysInMonth[amount % 12]) {
-                set(DAY_OF_MONTH, jalaliDaysInMonth[amount % 12]);
+                super.set(DAY_OF_MONTH, jalaliDaysInMonth[amount % 12]);
                 if (get(MONTH) == 11 && isLeepYear(get(YEAR))) {
-                    set(DAY_OF_MONTH, 30);
+                    super.set(DAY_OF_MONTH, 30);
                 }
             }
             complete();
 
         } else if (field == YEAR) {
 
-            set(YEAR, get(YEAR) + amount);
+            super.set(YEAR, get(YEAR) + amount);
             if (get(DAY_OF_MONTH) == 30 && get(MONTH) == 11 && !isLeepYear(get(YEAR))) {
-                set(DAY_OF_MONTH, 29);
+                super.set(DAY_OF_MONTH, 29);
             }
 
             complete();
@@ -493,8 +550,12 @@ public class JalaliCalendar extends Calendar {
                     get(HOUR_OF_DAY), get(MINUTE), get(SECOND));
             gc.add(field, amount);
             yearMonthDate = gregorianToJalali(new YearMonthDate(gc.get(YEAR), gc.get(MONTH), gc.get(DATE)));
-            set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(), gc.get(HOUR_OF_DAY), gc.get(MINUTE)
-                    , gc.get(SECOND));
+            super.set(YEAR, yearMonthDate.getYear());
+            super.set(MONTH, yearMonthDate.getMonth());
+            super.set(DATE, yearMonthDate.getDate());
+            super.set(HOUR_OF_DAY, gc.get(HOUR_OF_DAY));
+            super.set(MINUTE, gc.get(MINUTE));
+            super.set(SECOND, gc.get(SECOND));
             complete();
         }
 
@@ -515,11 +576,7 @@ public class JalaliCalendar extends Calendar {
             throw new IllegalArgumentException();
         }
 
-        // Sync the time and calendar fields.
         complete();
-
-        int min = getMinimum(field);
-        int max = getMaximum(field);
 
         switch (field) {
             case AM_PM: {
@@ -530,17 +587,17 @@ public class JalaliCalendar extends Calendar {
                         fields[AM_PM] = AM;
                     }
                     if (get(AM_PM) == AM) {
-                        set(HOUR_OF_DAY, get(HOUR));
+                        super.set(HOUR_OF_DAY, get(HOUR));
                     } else {
-                        set(HOUR_OF_DAY, get(HOUR) + 12);
+                        super.set(HOUR_OF_DAY, get(HOUR) + 12);
                     }
                 }
                 break;
             }
             case YEAR: {
-                set(YEAR, internalGet(YEAR) + amount);
+                super.set(YEAR, internalGet(YEAR) + amount);
                 if (internalGet(MONTH) == 11 && internalGet(DAY_OF_MONTH) == 30 && !isLeepYear(internalGet(YEAR))) {
-                    set(DAY_OF_MONTH, 29);
+                    super.set(DAY_OF_MONTH, 29);
                 }
                 break;
             }
@@ -550,7 +607,7 @@ public class JalaliCalendar extends Calendar {
                 if (m < 0) {
                     m += unit;
                 }
-                set(MINUTE, m);
+                super.set(MINUTE, m);
                 break;
             }
             case SECOND: {
@@ -559,7 +616,7 @@ public class JalaliCalendar extends Calendar {
                 if (s < 0) {
                     s += unit;
                 }
-                set(SECOND, s);
+                super.set(SECOND, s);
                 break;
             }
             case MILLISECOND: {
@@ -568,19 +625,19 @@ public class JalaliCalendar extends Calendar {
                 if (ms < 0) {
                     ms += unit;
                 }
-                set(MILLISECOND, ms);
+                super.set(MILLISECOND, ms);
                 break;
             }
 
             case HOUR: {
-                set(HOUR, (internalGet(HOUR) + amount) % 12);
+                super.set(HOUR, (internalGet(HOUR) + amount) % 12);
                 if (internalGet(HOUR) < 0) {
                     fields[HOUR] += 12;
                 }
                 if (internalGet(AM_PM) == AM) {
-                    set(HOUR_OF_DAY, internalGet(HOUR));
+                    super.set(HOUR_OF_DAY, internalGet(HOUR));
                 } else {
-                    set(HOUR_OF_DAY, internalGet(HOUR) + 12);
+                    super.set(HOUR_OF_DAY, internalGet(HOUR) + 12);
                 }
 
                 break;
@@ -604,14 +661,14 @@ public class JalaliCalendar extends Calendar {
                 if (mon < 0) {
                     mon += 12;
                 }
-                set(MONTH, mon);
+                super.set(MONTH, mon);
 
                 int monthLen = jalaliDaysInMonth[mon];
                 if (internalGet(MONTH) == 11 && isLeepYear(internalGet(YEAR))) {
                     monthLen = 30;
                 }
                 if (internalGet(DAY_OF_MONTH) > monthLen) {
-                    set(DAY_OF_MONTH, monthLen);
+                    super.set(DAY_OF_MONTH, monthLen);
                 }
                 break;
             }
@@ -634,7 +691,7 @@ public class JalaliCalendar extends Calendar {
                 if (d < 0) {
                     d += unit;
                 }
-                set(DAY_OF_MONTH, d);
+                super.set(DAY_OF_MONTH, d);
                 break;
 
             }
@@ -649,8 +706,8 @@ public class JalaliCalendar extends Calendar {
                 while (dayOfYear > temp) {
                     temp += jalaliDaysInMonth[month++];
                 }
-                set(MONTH, --month);
-                set(DAY_OF_MONTH, jalaliDaysInMonth[internalGet(MONTH)] - (temp - dayOfYear));
+                super.set(MONTH, --month);
+                super.set(DAY_OF_MONTH, jalaliDaysInMonth[internalGet(MONTH)] - (temp - dayOfYear));
                 break;
             }
             case DAY_OF_WEEK: {
@@ -670,23 +727,9 @@ public class JalaliCalendar extends Calendar {
                 break;
             }
 
-            case WEEK_OF_MONTH:{
-                int dayOfMonth=internalGet(DAY_OF_MONTH);
-
-            }
-           
             default:
                 throw new IllegalArgumentException();
         }
-//        YearMonthDate yearMonthDate=jalaliToGregorian(new YearMonthDate(internalGet(YEAR),internalGet(MONTH)
-//                ,internalGet(DAY_OF_MONTH)));
-//        cal=new GregorianCalendar(yearMonthDate.getYear(),yearMonthDate.getMonth(),yearMonthDate.getDate()
-//                ,internalGet(HOUR_OF_DAY),internalGet(MINUTE),internalGet(SECOND));
-//        cal.roll(field,amount);
-//        yearMonthDate=gregorianToJalali(new YearMonthDate(cal.get(YEAR),cal.get(MONTH),cal.get(DAY_OF_MONTH)));
-//        set(yearMonthDate.getYear(),yearMonthDate.getMonth(),yearMonthDate.getDate(),cal.get(HOUR_OF_DAY)
-//                ,cal.get(MINUTE),cal.get(DAY_OF_MONTH));
-//        complete();
 
     }
 
