@@ -169,6 +169,9 @@ public class JalaliCalendar extends Calendar {
 
     public static YearMonthDate gregorianToJalali(YearMonthDate gregorian) {
 
+        if(gregorian.getMonth()>11 || gregorian.getMonth()<-11){
+            throw new IllegalArgumentException();
+        }
         int jalaliYear;
         int jalaliMonth;
         int jalaliDay;
