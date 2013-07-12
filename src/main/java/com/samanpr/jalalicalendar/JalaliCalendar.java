@@ -158,7 +158,7 @@ public class JalaliCalendar extends Calendar {
 
         this.set(MILLISECOND, millis);
 
-        YearMonthDate yearMonthDate = jalaliToGregorian(new YearMonthDate(year, month, dayOfMonth));
+        YearMonthDate yearMonthDate = jalaliToGregorian(new YearMonthDate(fields[1], fields[2], fields[5]));
         cal = new GregorianCalendar(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate(), hourOfDay,
                 minute, second);
         time = cal.getTimeInMillis();
@@ -218,6 +218,9 @@ public class JalaliCalendar extends Calendar {
 
 
     public static YearMonthDate jalaliToGregorian(YearMonthDate jalali) {
+        if(jalali.getMonth()>11 || jalali.getMonth()<-11){
+            throw new IllegalArgumentException();
+        }
 
         int gregorianYear;
         int gregorianMonth;
@@ -387,11 +390,14 @@ public class JalaliCalendar extends Calendar {
                 break;
             }
             case MONTH: {
-                super.set(field, value % 12);
                 if (value > 11) {
+                    super.set(field, 11);
                     add(field, value - 11);
-                } else if (value < -11) {
-                    add(field, value + 11);
+                } else if (value < 0) {
+                    super.set(field, 0);
+                    add(field, value);
+                } else {
+                    super.set(field, value);
                 }
                 break;
             }
@@ -793,6 +799,5 @@ public class JalaliCalendar extends Calendar {
             return getYear() + "/" + getMonth() + "/" + getDate();
         }
     }
-
 }
 

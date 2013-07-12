@@ -86,6 +86,7 @@ public class JalaliCalendarTest {
         Assert.assertEquals(JalaliCalendar.jalaliToGregorian(new JalaliCalendar.YearMonthDate(1387, 7, 9)).toString(), "2008/9/30");
         Assert.assertEquals(JalaliCalendar.jalaliToGregorian(new JalaliCalendar.YearMonthDate(1386, 0, 5)).toString(), "2007/2/25");
         Assert.assertEquals(JalaliCalendar.jalaliToGregorian(new JalaliCalendar.YearMonthDate(1385, 4, 18)).toString(), "2006/7/9");
+        Assert.assertEquals(JalaliCalendar.jalaliToGregorian(new JalaliCalendar.YearMonthDate(1392,0,31)).toString(),"2013/3/20");
     }
 
     @Test
