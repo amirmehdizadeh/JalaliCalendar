@@ -4,7 +4,7 @@
     <groupId>com.pardazeshgaran.jalaliCalendar</groupId>
     <artifactId>jalaliCalendar</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>jalaliCalendar</name>
     <url>https://github.com/amirmehdizadeh/JalaliCalendar</url>
     <dependencies>
