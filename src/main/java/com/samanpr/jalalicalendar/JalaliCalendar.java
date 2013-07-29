@@ -116,7 +116,7 @@ public class JalaliCalendar extends Calendar {
 
         YearMonthDate yearMonthDate = new YearMonthDate(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DATE));
         yearMonthDate = gregorianToJalali(yearMonthDate);
-        super.set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate());
+        set(yearMonthDate.getYear(), yearMonthDate.getMonth(), yearMonthDate.getDate());
         complete();
 
     }
@@ -169,7 +169,7 @@ public class JalaliCalendar extends Calendar {
 
     public static YearMonthDate gregorianToJalali(YearMonthDate gregorian) {
 
-        if(gregorian.getMonth()>11 || gregorian.getMonth()<-11){
+        if (gregorian.getMonth() > 11 || gregorian.getMonth() < -11) {
             throw new IllegalArgumentException();
         }
         int jalaliYear;
@@ -221,7 +221,7 @@ public class JalaliCalendar extends Calendar {
 
 
     public static YearMonthDate jalaliToGregorian(YearMonthDate jalali) {
-        if(jalali.getMonth()>11 || jalali.getMonth()<-11){
+        if (jalali.getMonth() > 11 || jalali.getMonth() < -11) {
             throw new IllegalArgumentException();
         }
 
