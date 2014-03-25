@@ -30,6 +30,7 @@ public class JalaliCalendar extends Calendar {
     private static final int ONE_SECOND = 1000;
     private static final int ONE_MINUTE = 60 * ONE_SECOND;
     private static final int ONE_HOUR = 60 * ONE_MINUTE;
+    @SuppressWarnings("unused")
     private static final long ONE_DAY = 24 * ONE_HOUR;
     static final int BCE = 0;
     static final int CE = 1;
