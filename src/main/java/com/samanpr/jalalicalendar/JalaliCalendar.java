@@ -213,7 +213,7 @@ public class JalaliCalendar extends Calendar {
         for (i = 0; i < 11 && jalaliDayNo >= jalaliDaysInMonth[i]; ++i) {
             jalaliDayNo -= jalaliDaysInMonth[i];
         }
-        jalaliMonth = i;
+        jalaliMonth = i == 0 ? 1 : i;
         jalaliDay = jalaliDayNo + 1;
 
         return new YearMonthDate(jalaliYear, jalaliMonth, jalaliDay);
